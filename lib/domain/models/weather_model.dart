@@ -6,4 +6,6 @@ class WeatherModel {
 
   final double temperature;
   final String city;
+
+  
 }

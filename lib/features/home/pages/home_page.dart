@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_weather/app/core/enums.dart';
+import 'package:simple_weather/data/remote_data_sources/weather_remote_data_source.dart';
 import 'package:simple_weather/domain/models/weather_model.dart';
 import 'package:simple_weather/domain/repositories/weather_repository.dart';
 import 'package:simple_weather/features/home/cubit/home_cubit.dart';
 
+// HomePage Widget
 class HomePage extends StatelessWidget {
   const HomePage({
     Key? key,
@@ -12,12 +14,15 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // BlocProvider HomeCubit
     return BlocProvider(
       create: (context) => HomeCubit(
-        WeatherRepository(),
+        WeatherRepository(WeatherRemoteDataSource()),
       ),
+      // BlocListener HomeCubit
       child: BlocListener<HomeCubit, HomeState>(
         listener: (context, state) {
+          // If error
           if (state.status == Status.error) {
             final errorMessage = state.errorMessage ?? 'Unkown error';
             ScaffoldMessenger.of(context).showSnackBar(
@@ -28,13 +33,16 @@ class HomePage extends StatelessWidget {
             );
           }
         },
+        // BlocBuilder HomeCubit
         child: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
             final weatherModel = state.model;
             return Scaffold(
+              // AppBar HomePage
               appBar: AppBar(
                 title: const Text('Temperature'),
               ),
+              // Builder HomePage
               body: Center(
                 child: Builder(builder: (context) {
                   if (state.status == Status.loading) {
