@@ -19,8 +19,9 @@ class HomePage extends StatelessWidget {
       create: (context) => HomeCubit(
         WeatherRepository(WeatherRemoteDataSource()),
       ),
-      // BlocListener HomeCubit
-      child: BlocListener<HomeCubit, HomeState>(
+      // BlocConsumer HomeCubit
+      child: BlocConsumer<HomeCubit, HomeState>(
+        // Block Listener
         listener: (context, state) {
           // If error
           if (state.status == Status.error) {
@@ -33,36 +34,33 @@ class HomePage extends StatelessWidget {
             );
           }
         },
-        // BlocBuilder HomeCubit
-        child: BlocBuilder<HomeCubit, HomeState>(
-          builder: (context, state) {
-            final weatherModel = state.model;
-            return Scaffold(
-              // AppBar HomePage
-              appBar: AppBar(
-                title: const Text('Temperature'),
-              ),
-              // Builder HomePage
-              body: Center(
-                child: Builder(builder: (context) {
-                  if (state.status == Status.loading) {
-                    return const Text('Loading');
-                  }
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (weatherModel != null)
-                        _DisplayWeatherWidget(
-                          weatherModel: weatherModel,
-                        ),
-                      _SearchWidget(),
-                    ],
-                  );
-                }),
-              ),
-            );
-          },
-        ),
+        builder: (context, state) {
+          final weatherModel = state.model;
+          return Scaffold(
+            // AppBar HomePage
+            appBar: AppBar(
+              title: const Text('Temperature'),
+            ),
+            // Builder HomePage
+            body: Center(
+              child: Builder(builder: (context) {
+                if (state.status == Status.loading) {
+                  return const Text('Loading');
+                }
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (weatherModel != null)
+                      _DisplayWeatherWidget(
+                        weatherModel: weatherModel,
+                      ),
+                    _SearchWidget(),
+                  ],
+                );
+              }),
+            ),
+          );
+        },
       ),
     );
   }
